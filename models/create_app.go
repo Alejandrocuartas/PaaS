@@ -6,9 +6,10 @@ import (
 )
 
 type CreateApp struct {
-	Name          string `json:"name"`
-	RepositoryUrl string `json:"repository_url"`
-	UserId        uint   `json:"user_id"`
+	Name                string `json:"name"`
+	RepositoryUrl       string `json:"repository_url"`
+	UserId              uint   `json:"user_id"`
+	DeploymentDirecotry string `json:"deployment_directory"`
 }
 
 func (c CreateApp) Validate() error {
@@ -23,6 +24,9 @@ func (c CreateApp) Validate() error {
 	}
 	if c.UserId == 0 {
 		return errors.New("user_id is required")
+	}
+	if c.DeploymentDirecotry == "" {
+		return errors.New("deployment_directory is required")
 	}
 	return nil
 }

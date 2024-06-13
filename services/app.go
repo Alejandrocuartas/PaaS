@@ -6,6 +6,7 @@ import (
 	"PaaS/utilities"
 	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -18,12 +19,13 @@ func CreateApp(data models.CreateApp) (
 	r models.CreateAppResponse,
 	e error,
 ) {
-
+	data.DeploymentDirecotry = strings.ReplaceAll(data.DeploymentDirecotry, "/", "")
 	app := models.App{
-		Name:          data.Name,
-		RepositoryUrl: data.RepositoryUrl,
-		UserId:        data.UserId,
-		Status:        models.AppStatusPending,
+		Name:                data.Name,
+		RepositoryUrl:       data.RepositoryUrl,
+		UserId:              data.UserId,
+		Status:              models.AppStatusPending,
+		DeploymentDirecotry: data.DeploymentDirecotry,
 	}
 
 	e = repositories.CreateApp(&app)
