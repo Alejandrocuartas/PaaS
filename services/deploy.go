@@ -2,33 +2,45 @@ package services
 
 import (
 	"PaaS/environment"
+	"PaaS/repositories"
 	"PaaS/utilities"
+	"fmt"
+
+	"github.com/jinzhu/gorm"
 )
 
 func Deploy(appIdentifier string) error {
 
 	var err error
 
-	deploymentDirectory := "dist"
-	repoName := "deploy-packages"
-
-	err = utilities.CloneRepo("https://github.com/Alejandrocuartas/chiper-front.git", repoName)
+	app, err := repositories.GetAppByUuid(appIdentifier)
 	if err != nil {
-		panic(err)
+		if gorm.IsRecordNotFoundError(err) {
+			return fmt.Errorf("app with uuid %s not found", appIdentifier)
+		}
+		return err
+	}
+	fmt.Println(app)
+
+	dir := "deploy-packages"
+
+	err = utilities.CloneRepo(app.RepositoryUrl, dir)
+	if err != nil {
+		return err
 	}
 
-	err = utilities.GenerateTemplateFiles(appIdentifier, deploymentDirectory, environment.TaskRole, repoName)
+	err = utilities.GenerateTemplateFiles(app.UUID.String(), app.DeploymentDirecotry, environment.TaskRole, dir)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
-	err = utilities.DeployToECS(repoName, appIdentifier)
+	err = utilities.DeployToECS(dir, app.UUID.String())
 	if err != nil {
-		panic(err)
+		return err
 	}
 
-	utilities.RemoveDir(repoName)
-	utilities.RemoveDockerImage(appIdentifier)
+	utilities.RemoveDir(dir)
+	utilities.RemoveDockerImage(app.UUID.String())
 
 	return nil
 }

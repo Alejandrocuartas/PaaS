@@ -23,7 +23,6 @@ func InitEnv() {
 	AwsAccountID = GetEnv("AWS_ACCOUNT_ID")
 	TaskRole = GetEnv("TASK_ROLE")
 	IsProduction = GetEnv("IS_PRODUCTION") == "true"
-
 	DbHost = GetEnv("DB_HOST")
 	DbPort = GetEnv("DB_PORT")
 	DbUser = GetEnv("DB_USER")
@@ -33,8 +32,6 @@ func InitEnv() {
 }
 
 func GetEnv(key string) string {
-
-	//if unexisting panic
 
 	value := os.Getenv(key)
 

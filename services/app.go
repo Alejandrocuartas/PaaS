@@ -39,6 +39,7 @@ func CreateApp(data models.CreateApp) (
 		},
 	)
 	if err != nil {
+		app.Status = models.AppStatusInactive
 		repositories.UpdateApp(&app)
 		log.Printf("an error happened trying to connect to aws %s", err.Error())
 		return r, fmt.Errorf("an error happened trying to connect to aws %s", err.Error())
