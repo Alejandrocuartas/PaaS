@@ -19,7 +19,7 @@ func CreateApp(data models.CreateApp) (
 	r models.CreateAppResponse,
 	e error,
 ) {
-	data.DeploymentDirecotry = strings.ReplaceAll(data.DeploymentDirecotry, "/", "")
+	data.DeploymentDirecotry = strings.Trim(data.DeploymentDirecotry, "/")
 	app := models.App{
 		Name:                data.Name,
 		RepositoryUrl:       data.RepositoryUrl,
