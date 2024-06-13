@@ -22,6 +22,15 @@ func (c CreateApp) Validate() error {
 	if !strings.Contains(c.RepositoryUrl, "https://") {
 		return errors.New("repository_url must start with https://")
 	}
+	if !strings.Contains(c.RepositoryUrl, ".git") {
+		return errors.New("repository_url must end with .git")
+	}
+
+	repoParts := strings.Split(c.RepositoryUrl, ".")
+	if repoParts[len(repoParts)-1] != "git" {
+		return errors.New("repository_url must end with .git")
+	}
+
 	if c.UserId == 0 {
 		return errors.New("user_id is required")
 	}

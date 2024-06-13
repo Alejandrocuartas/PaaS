@@ -22,20 +22,23 @@ func Deploy(appIdentifier string) error {
 	}
 	fmt.Println(app)
 
-	dir := "deploy-packages"
+	dir := appIdentifier
 
 	err = utilities.CloneRepo(app.RepositoryUrl, dir)
 	if err != nil {
+		utilities.RemoveDir(dir)
 		return err
 	}
 
 	err = utilities.GenerateTemplateFiles(app.UUID.String(), app.DeploymentDirecotry, environment.TaskRole, dir)
 	if err != nil {
+		utilities.RemoveDir(dir)
 		return err
 	}
 
 	err = utilities.DeployToECS(dir, app.UUID.String())
 	if err != nil {
+		utilities.RemoveDir(dir)
 		return err
 	}
 
